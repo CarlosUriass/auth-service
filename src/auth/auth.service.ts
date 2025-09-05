@@ -11,9 +11,10 @@ import { User } from './entities/user.entity';
 import { JwtPayload, JwtUser } from './types/payload.type';
 
 /**
- * Servicio de autenticación.
+ * Servicio de autenticación
  *
- * Maneja registro de usuarios, validación de credenciales y generación de JWT.
+ * Maneja registro de usuarios, validación de credenciales,
+ * generación de JWT y login social.
  */
 @Injectable()
 export class AuthService {
@@ -111,5 +112,36 @@ export class AuthService {
     await this.userRepository.save(newUser);
 
     return this.login(newUser);
+  }
+
+  /**
+   * Login social (Google, Meta, etc.)
+   *
+   * Si el usuario no existe, lo crea automáticamente y luego genera el JWT.
+   * @param socialUser Objeto con datos del usuario social (email y nombre completo)
+   * @returns Objeto con access_token, expiración y datos del usuario
+   */
+  async socialLogin(socialUser: { email: string; name: string }) {
+    let user = await this.userRepository.findOne({
+      where: { email: socialUser.email.toLowerCase() },
+    });
+
+    if (!user) {
+      // Separar nombre y apellidos
+      const [firstName, ...lastNameParts] = socialUser.name.split(' ');
+      const lastName = lastNameParts.join(' ');
+
+      user = this.userRepository.create({
+        email: socialUser.email.toLowerCase(),
+        name: firstName,
+        last_name: lastName,
+        password: '',
+        rol: 'user',
+      });
+
+      await this.userRepository.save(user);
+    }
+
+    return this.login(user);
   }
 }

@@ -53,4 +53,32 @@ export class AuthController {
       throw error;
     }
   }
+
+  /**
+   * Inicia el flujo de login con Google.
+   *
+   * Este endpoint redirige al usuario a la página de autorización de Google.
+   * El guard `AuthGuard('google')` se encarga de iniciar la autenticación.
+   */
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleLogin() {
+    // No se necesita implementación, Passport redirige automáticamente a Google
+  }
+
+  /**
+   * Callback de Google OAuth2
+   *
+   * Este endpoint recibe la respuesta de Google después de que el usuario
+   * autoriza la app. El guard `AuthGuard('google')` valida la autenticación
+   * y coloca el usuario en `req.user`.
+   *
+   * @param req Request HTTP con el usuario autenticado por Passport
+   * @returns JWT generado por AuthService.socialLogin
+   */
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleCallback(@Req() req) {
+    return this.authService.socialLogin(req.user);
+  }
 }

@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { User } from './entities/user.entity';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 /**
  * Módulo de autenticación.
@@ -53,7 +54,7 @@ import { User } from './entities/user.entity';
   /**
    * Proveedores del módulo: servicios y estrategias.
    */
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy],
 
   /**
    * Exporta AuthService para que pueda ser usado en otros módulos.
