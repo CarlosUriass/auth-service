@@ -7,10 +7,12 @@ import {
   UsePipes,
   ValidationPipe,
   Get,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
+import express from 'express';
 
 /**
  * Controlador para la autenticación de usuarios.
@@ -78,7 +80,15 @@ export class AuthController {
    */
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleCallback(@Req() req) {
-    return this.authService.socialLogin(req.user);
+  async googleCallback(@Req() req, @Res() res: express.Response) {
+    const jwt = this.authService.socialLogin(req.user);
+
+    res.cookie('token', jwt, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    });
+
+    return res.redirect('http://localhost:3000/learn');
   }
 }
