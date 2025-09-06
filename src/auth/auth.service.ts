@@ -107,6 +107,8 @@ export class AuthService {
       email: dto.email.toLowerCase(),
       password: hashedPassword,
       rol: dto.rol ?? 'user',
+      name: dto.first_name,
+      last_name: dto.last_name,
     });
 
     await this.userRepository.save(newUser);

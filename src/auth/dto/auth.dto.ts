@@ -42,13 +42,13 @@ export class RegisterDto {
    * Nombre del usuario.
    */
   @IsString()
-  nombre: string;
+  first_name: string;
 
   /**
    * Apellidos del usuario.
    */
   @IsString()
-  apellidos: string;
+  last_name: string;
 
   /**
    * Rol del usuario.
